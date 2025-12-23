@@ -1,4 +1,5 @@
 import { UserModel } from '../models/User.js';
+import { generateAccessToken, generateRefreshToken, setTokenCookie, setRefreshTokenCookie, clearAuthCookies } from '../utils/jwt.js';
 
 /**
  * @route   POST /api/users/register
@@ -55,6 +56,20 @@ export const createUser = async (req, res) => {
             password,
             profileData
         });
+
+        // Generate JWT tokens
+        const tokenPayload = {
+            userId: newUser.user_id,
+            email: newUser.email,
+            username: newUser.username
+        };
+
+        const accessToken = generateAccessToken(tokenPayload);
+        const refreshToken = generateRefreshToken(tokenPayload);
+
+        // Set tokens in httpOnly cookies
+        setTokenCookie(res, accessToken);
+        setRefreshTokenCookie(res, refreshToken);
 
         // Remove sensitive data before sending response
         const { password_hash, salt, ...userResponse } = newUser;
@@ -124,6 +139,20 @@ export const loginUser = async (req, res) => {
         await UserModel.resetLoginAttempts(user.user_id.toString());
         await UserModel.updateLastLogin(user.user_id.toString());
 
+        // Generate JWT tokens
+        const tokenPayload = {
+            userId: user.user_id.toString(),
+            email: user.email,
+            username: user.username
+        };
+
+        const accessToken = generateAccessToken(tokenPayload);
+        const refreshToken = generateRefreshToken(tokenPayload);
+
+        // Set tokens in httpOnly cookies
+        setTokenCookie(res, accessToken);
+        setRefreshTokenCookie(res, refreshToken);
+
         // Remove sensitive data
         const { password_hash, salt, ...userResponse } = user;
 
@@ -144,6 +173,64 @@ export const loginUser = async (req, res) => {
 };
 
 /**
+ * @route   POST /api/users/logout
+ * @desc    Logout user and clear tokens
+ * @access  Public
+ */
+export const logoutUser = async (req, res) => {
+    try {
+        // Clear authentication cookies
+        clearAuthCookies(res);
+
+        res.status(200).json({
+            success: true,
+            message: 'Logged out successfully'
+        });
+    } catch (error) {
+        console.error('Logout error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error during logout',
+            error: error.message
+        });
+    }
+};
+
+/**
+ * @route   GET /api/users/me
+ * @desc    Get current logged-in user
+ * @access  Private
+ */
+export const getCurrentUser = async (req, res) => {
+    try {
+        // req.user is set by the authenticate middleware
+        const user = await UserModel.findById(req.user.userId);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Remove sensitive data
+        const { password_hash, salt, ...userResponse } = user;
+
+        res.status(200).json({
+            success: true,
+            data: userResponse
+        });
+    } catch (error) {
+        console.error('Get current user error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching current user',
+            error: error.message
+        });
+    }
+};
+
+/**
  * @route   GET /api/users/:id
  * @desc    Get user by ID
  * @access  Private
@@ -151,8 +238,7 @@ export const loginUser = async (req, res) => {
 export const getUser = async (req, res) => {
     try {
         const { id } = req.params;
-
-        console.log('Getting user with id:', id);
+        // console.log('Getting user with id:', id);
 
         const user = await UserModel.findById(id);
 
