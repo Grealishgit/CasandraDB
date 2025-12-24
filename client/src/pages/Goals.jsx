@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import { goalsAPI } from '../api/goals';
 import { Calendar, Target, Filter, Plus, Search, Grid, List, TrendingUp } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Goals = () => {
     const { darkMode } = useOutletContext() || { darkMode: false };
@@ -54,9 +55,10 @@ const Goals = () => {
             try {
                 await goalsAPI.deleteGoal(goalId);
                 setGoals(goals.filter(goal => goal.goal_id !== goalId));
+                toast.success('Goal deleted successfully!');
             } catch (err) {
                 console.error('Error deleting goal:', err);
-                alert('Failed to delete goal. Please try again.');
+                toast.error('Failed to delete goal. Please try again.');
             }
         }
     };
@@ -111,9 +113,12 @@ const Goals = () => {
     };
 
     return (
-        <div className={`min-h-screen pt-20 pb-10 px-4 transition-colors duration-300 
+        <div className={`min-h-screen pt-20 pb-10 p-4 items-center transition-colors duration-300 
              ${darkMode ? 'bg-linear-to-tr from-gray-950 via-gray-900 to-gray-950 text-white' :
                 'bg-linear-to-tl via-indigo-400/40 from-indigo-50 to-gray-50'}`}>
+
+
+            <div className="max-w-7xl mx-auto">
             <div className={`flex justify-between items-center rounded-md p-2 
             ${darkMode ? 'bg-gradient-to-br border border-gray-800 from-gray-950 via-gray-900 to-gray-950'
                     : 'bg-gradient-to-br from-gray-50 via-white to-gray-50'}  mb-5`}>
@@ -136,8 +141,10 @@ const Goals = () => {
             <p className={`text-lg text-center mb-3 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 Track your progress and achieve greatness
             </p>
-            <div className='flex md:flex-row max-w-7xl gap-3 w-full flex-col'>
-                <div className="max-w-7xl w-[65%] mx-auto">
+
+
+                <div className='flex md:flex-row gap-3 flex-col'>
+                    <div className="md:w-[65%] w-full mx-auto">
                     {/* Header with Stats */}
                     <div className="mb-8">
                         {/* Stats Cards */}
@@ -217,7 +224,7 @@ const Goals = () => {
                                 <select
                                     value={filterStatus}
                                     onChange={(e) => setFilterStatus(e.target.value)}
-                                    className={`w-full px-4 py-2 rounded-lg border transition-all duration-200 ${darkMode
+                                        className={`w-full cursor-pointer px-4 py-2 rounded-lg border transition-all duration-200 ${darkMode
                                         ? 'bg-gray-700/50 border-gray-600 text-white focus:bg-gray-700'
                                         : 'bg-gray-50/50 border-gray-300 text-gray-800 focus:bg-white'
                                         } focus:outline-none focus:ring-2 focus:ring-[#6634E2] focus:border-transparent`}
@@ -236,7 +243,7 @@ const Goals = () => {
                                 <select
                                     value={filterCategory}
                                     onChange={(e) => setFilterCategory(e.target.value)}
-                                    className={`w-full px-4 py-2 rounded-lg border transition-all duration-200 ${darkMode
+                                        className={`w-full cursor-pointer px-4 py-2 rounded-lg border transition-all duration-200 ${darkMode
                                         ? 'bg-gray-700/50 border-gray-600 text-white focus:bg-gray-700'
                                         : 'bg-gray-50/50 border-gray-300 text-gray-800 focus:bg-white'
                                         } focus:outline-none focus:ring-2 focus:ring-[#6634E2] focus:border-transparent`}
@@ -256,7 +263,7 @@ const Goals = () => {
                         <div className="flex justify-end mt-2 gap-2">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`p-2.5 rounded-lg transition-all duration-200 ${viewMode === 'grid'
+                                    className={`p-2.5 cursor-pointer rounded-lg transition-all duration-200 ${viewMode === 'grid'
                                     ? 'bg-[#6634E2] text-white shadow-lg'
                                     : darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                                     }`}
@@ -265,7 +272,7 @@ const Goals = () => {
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
-                                className={`p-2.5 rounded-lg transition-all duration-200 ${viewMode === 'list'
+                                    className={`p-2.5 cursor-pointer rounded-lg transition-all duration-200 ${viewMode === 'list'
                                     ? 'bg-[#6634E2] text-white shadow-lg'
                                     : darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                                     }`}
@@ -275,16 +282,7 @@ const Goals = () => {
                         </div>
                     </div>
 
-                    {/* Loading State */}
-                    {loading && (
-                        <div className="flex flex-col justify-center items-center py-20">
-                            <div className="relative">
-                                <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-[#6634E2]"></div>
-                                <div className="absolute inset-0 rounded-full bg-purple-500/10 animate-pulse"></div>
-                            </div>
-                            <p className={`mt-4 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Loading goals...</p>
-                        </div>
-                    )}
+
 
                     {/* Error State */}
                     {error && (
@@ -313,7 +311,7 @@ const Goals = () => {
                                     </button>
                                 </div>
                             ) : (
-                                <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+                                        <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4' : 'space-y-4'}>
                                     {filteredGoals.map((goal) => {
                                         const statusConfig = getStatusConfig(goal.status);
                                         const categoryConfig = getCategoryConfig(goal.category);
@@ -408,15 +406,15 @@ const Goals = () => {
                     )}
                 </div>
 
-                <div className="w-[35%]">
+                    <div className="md:w-[35%] w-full">
                     {/* Recent Added Goals */}
                     <div className="mb-8">
                         <h2 className="text-2xl font-bold mb-4">Recently Added Goals</h2>
                         {goals.slice(0, 5).map((goal) => (
                             <div
                                 key={goal.goal_id}
-                                className={`rounded-md shadow-lg border overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] cursor-pointer group ${darkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'
-                                    } mb-4`}
+                                className={`rounded-md shadow-lg border overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] cursor-pointer group ${darkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white border-gray-200'} mb-4`}
+
                                 onClick={() => navigate(`/goals/${goal.goal_id}`)}
                             >
                                 {/* Banner Image */}
@@ -450,7 +448,18 @@ const Goals = () => {
                 </div>
             </div>
 
+            </div>
 
+            {/* Loading State */}
+            {loading && (
+                <div className="flex flex-col justify-center items-center py-20">
+                    <div className="relative">
+                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-[#6634E2]"></div>
+                        <div className="absolute inset-0 rounded-full bg-purple-500/10 animate-pulse"></div>
+                    </div>
+                    <p className={`mt-4 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Loading goals...</p>
+                </div>
+            )}
         </div>
     );
 };

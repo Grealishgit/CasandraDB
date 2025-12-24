@@ -90,8 +90,12 @@ export const uploadBanner = async (req, res) => {
         // Upload to Uploadcare
         const result = await uploadcareClient.uploadFile(fileData);
 
-        // Get the CDN URL
-        const cdnUrl = `https://ucarecdn.com/${result.uuid}/`;
+        // Log the full result to see what Uploadcare returns
+        console.log('Uploadcare upload result:', JSON.stringify(result, null, 2));
+
+        // Construct the proper CDN URL using your custom domain
+        const cdnBase = process.env.UPLOADCARE_CDN_BASE || 'https://ucarecdn.com';
+        const cdnUrl = `${cdnBase}/${result.uuid}/`;
 
         res.status(200).json({
             success: true,
@@ -99,6 +103,7 @@ export const uploadBanner = async (req, res) => {
             data: {
                 uuid: result.uuid,
                 url: cdnUrl,
+                cdnUrl: cdnUrl,
                 originalUrl: result.originalUrl,
                 name: result.name,
                 size: result.size,

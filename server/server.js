@@ -3,8 +3,6 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
-
-
 import { connectDB } from './config/db.js';
 import userRouter from './routes/userRouter.js';
 import goalsRouter from './routes/goalsRouter.js';
