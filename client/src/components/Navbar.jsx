@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { LogOut, User, Target, Sun, Moon, ChevronDown } from 'lucide-react';
+import { LogOut, User, Target, Sun, Moon, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 
 const Navbar = ({ darkMode, setDarkMode }) => {
@@ -94,13 +94,15 @@ const Navbar = ({ darkMode, setDarkMode }) => {
                 <div className="md:hidden relative">
 
                     <div onClick={() => setShowSidebar(!showSidebar)}
-                        className={` ${darkMode ? 'text-white bg-gray-800' : 'text-gray-800 bg-gray-100'} p-2 rounded-md absolute -right-1 top-1 cursor-pointer`}>
-                        <ChevronDown />
+                        className={` ${darkMode ? 'text-white bg-gray-700' : 'text-gray-800 bg-gray-200 '}
+                         p-2 shadow-xl mt-2 rounded-md absolute -right-1 top-1 cursor-pointer`}>
+                        {!showSidebar ? <ChevronDown /> : <ChevronUp />}
                     </div>
 
 
                     {showSidebar && (
-                        <div className={`mt-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'}  space-y-2 rounded-md p-4`}>
+                        <div className={`mt-2 border-t  
+                        ${darkMode ? 'bg-gray-800 border-gray-100 text-white' : 'bg-gray-100 text-gray-800 border-gray-600'}  space-y-2  p-4`}>
                             <Link onClick={() => setShowSidebar(!showSidebar)}
                                 to="/home"
                                 className="block font-semibold py-2 hover:text-[#6634E2]  transition duration-200"
