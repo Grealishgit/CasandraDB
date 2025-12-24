@@ -27,7 +27,7 @@ const Home = () => {
 
 
     return (
-        <div className={`w-full h-screen mt-16  justify-center items-center
+        <div className={`w-full min-h-screen mt-16  justify-center items-center
         ${darkMode ? 'bg-linear-to-tr from-gray-950 via-gray-900 to-gray-950 text-white' :
                 'bg-linear-to-tl via-indigo-400/40 from-indigo-50 to-gray-50'} flex flex-col items-center`}>
 
@@ -154,27 +154,52 @@ const Home = () => {
                         </div>
 
                         {/* Bar Chart */}
-                        <div className='flex items-end justify-between h-48 gap-1'>
-                            {yearlyGoals.map((item) => {
-                                const maxGoals = Math.max(...yearlyGoals.map(g => g.goals));
-                                const heightPercentage = (item.goals / maxGoals) * 100;
+                        <div className='relative h-48 mt-4'>
+                            {/* Y-axis labels */}
+                            <div className='absolute left-0 top-0 flex flex-col justify-between text-xs text-gray-500 pr-2 pb-6' style={{ height: 'calc(100% - 24px)' }}>
+                                {[10, 8, 6, 4, 2, 0].map(num => (
+                                    <span key={num}>{num}</span>
+                                ))}
+                            </div>
 
-                                return (
-                                    <div key={item.id} className='flex flex-col items-center flex-1'>
-                                        <div className='w-full flex items-end justify-center h-full'>
+                            {/* Chart container */}
+                            <div className='flex items-end justify-between h-full gap-1 ml-6 pb-6'>
+                                {yearlyGoals && yearlyGoals.length > 0 ? yearlyGoals.map((item) => {
+                                    const maxGoals = Math.max(...yearlyGoals.map(g => g.goals)); // Dynamic max based on actual data
+
+                                    return (
+                                        <div key={item.id} className='flex flex-col items-center flex-1 h-full'>
+                                            {/* Spacer to push bar to bottom, with goal count */}
+                                            <div className='flex-1 flex flex-col justify-end'>
+                                                <span className={`text-xs font-bold text-center mb-1 ${new Date().toLocaleString('default', { month: 'long' }) === item.month ? 'text-[#6634E2]' : darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                                    {item.goals}
+                                                </span>
+                                            </div>
+
+                                            {/* The bar itself - proportional to maxGoals */}
                                             <div
-                                                className={`w-full rounded-t-md transition-all duration-300 hover:opacity-80 cursor-pointer
-                                                    ${item.month === 'Mar' ? 'bg-[#6634E2]' : darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}
-                                                style={{ height: `${heightPercentage}%` }}
-                                                title={`${item.month}: ${item.goals} goals, ${item.completed} completed`}
-                                            ></div>
+                                                className={`w-full rounded-t-md transition-all duration-300 hover:opacity-80 cursor-pointer relative group
+                                                    ${new Date().toLocaleString('default', { month: 'long' }) === item.month ? 'bg-[#6634E2]' : darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}
+                                                style={{
+                                                    height: `${(item.goals / maxGoals) * 100}%`
+                                                }}
+                                            >
+                                                {/* Tooltip on hover */}
+                                                <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap z-10'>
+                                                    {item.goals} goals, {item.completed} completed
+                                                </div>
+                                            </div>
+
+                                            {/* Month label */}
+                                            <span className={`text-xs mt-2 font-medium ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                                {item.month.slice(0, 3)}
+                                            </span>
                                         </div>
-                                        <span className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                            {item.month.slice(0, 3)}
-                                        </span>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                }) : (
+                                    <div className='w-full text-center text-gray-500'>No data available</div>
+                                )}
+                            </div>
                         </div>
 
                         {/* Legend */}
