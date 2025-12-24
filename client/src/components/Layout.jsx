@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import Footer from './Footer';
 
 const Layout = ({ children }) => {
 
@@ -22,10 +23,10 @@ const Layout = ({ children }) => {
     return (
         <div className={`min-h-screen  ${darkMode ? 'dark:bg-gray-950' : 'bg-gray-100'}`}>
             <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
-
             <main className={`flex-1 ${darkMode ? 'dark:bg-gray-950' : 'bg-gray-100'}`}>
                 <Outlet context={{ darkMode, setDarkMode }} />
             </main>
+            <Footer darkMode={darkMode} setDarkMode={setDarkMode} />
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import { BadgePercentIcon, Calendars, CircleCheckBig, ListCheck } from 'lucide-react';
 import React from 'react'
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { yearlyGoals } from '../lib/data';
 // import { quotes } from '../lib/quotes';
@@ -18,6 +18,8 @@ const Home = () => {
         if (currentHour < 18) return 'Good Afternoon';
         return 'Good Evening';
     }
+
+    const navigate = useNavigate();
 
     // useEffect(() => {
     //     const randomIndex = Math.floor(Math.random() * quotes.length);
@@ -39,16 +41,16 @@ const Home = () => {
             </div>
 
             <div className='flex mt-6'>
-                <button>
-                    <span className='mt-6 px-5 cursor-pointer py-2.5 bg-[#6634E2] text-white rounded-md hover:bg-[#7954d8] transition duration-200'>
+                <button onClick={() => navigate('/create-goal')}
+                    className='px-5 cursor-pointer py-2 bg-[#6634E2] text-white rounded-md hover:bg-[#7954d8] transition duration-200'>
                         Create New Goal
-                    </span>
+
                 </button>
-                <button>
-                    <span className={`mt-6 ml-4 ${darkMode ? 'text-black bg-gray-200' : 'text-gray-200 bg-gray-800'} cursor-pointer px-5 font-semibold py-2.5
+                <button onClick={() => navigate('/goals')}
+                    className={`ml-4 ${darkMode ? 'text-black bg-gray-200' : 'text-gray-200 bg-gray-800'} cursor-pointer px-5 font-semibold py-2
                           rounded-md hover:bg-gray-400 transition duration-200`}>
                         View Goals
-                    </span>
+
                 </button>
             </div>
 
@@ -113,7 +115,7 @@ const Home = () => {
             <div className='w-full max-w-6xl mt-10 px-4 mb-10'>
                 <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
                     {/* Left Card - Summary Information */}
-                    <div className={`p-6 rounded-lg shadow-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
+                    <div className={`p-5 rounded-lg shadow-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
                         <h3 className='text-2xl font-bold mb-4'>Your Progress</h3>
                         <div className='space-y-4'>
                             <div className='border-t border-gray-300 dark:border-gray-600 pt-4'>
