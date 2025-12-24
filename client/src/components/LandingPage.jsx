@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import bg from '../assets/images/bg.jpg'
 import { Eye, EyeOff, X } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const LandingPage = () => {
 
@@ -28,6 +29,7 @@ const LandingPage = () => {
         try {
             if (password !== confirmPassword) {
                 setError("Passwords do not match");
+                toast.error("Passwords do not match");
                 return;
             }
         } catch (error) {
