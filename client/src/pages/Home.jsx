@@ -52,7 +52,7 @@ const Home = () => {
         ${darkMode ? 'bg-linear-to-tr from-gray-950 via-gray-900 to-gray-950 text-white' :
                 'bg-linear-to-tl via-indigo-400/40 from-indigo-50 to-gray-50'} flex flex-col items-center`}>
 
-            <div className='text-center px-4'>
+            <div className='text-center mt-5 px-4'>
                 <h2 className='md:text-5xl text-4xl font-semibold'>{greeting()} 👋 <span className='text-[#6634E2] capitalize'>{user?.username || user?.email || 'User'}</span></h2>
                 <p className={`md:text-md text-sm mt-4 text-center ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
                     Bring your goals to life with FU | GOALS - your personal goal management companion.

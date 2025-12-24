@@ -388,16 +388,26 @@ export const getGoalStats = async (req, res) => {
         // Fetch all user's goals
         const allGoals = await GoalModel.findByUserId(user_id, 1000);
 
-        // Calculate stats
+        console.log('Fetched goals for stats:', allGoals.length);
+        console.log('Sample goal statuses:', allGoals.slice(0, 3).map(g => ({ title: g.title, status: g.status })));
+
+        // Calculate stats - handle both uppercase and lowercase status values
         const totalGoals = allGoals.length;
-        const completedGoals = allGoals.filter(g => g.status === 'COMPLETED').length;
-        const inProgressGoals = allGoals.filter(g => g.status === 'IN_PROGRESS').length;
+        const completedGoals = allGoals.filter(g =>
+            g.status && (g.status.toUpperCase() === 'COMPLETED' || g.status.toLowerCase() === 'completed')
+        ).length;
+        const inProgressGoals = allGoals.filter(g =>
+            g.status && (g.status.toUpperCase() === 'IN_PROGRESS' || g.status.toLowerCase() === 'in_progress')
+        ).length;
         const overdueGoals = allGoals.filter(g => {
             if (!g.target_date) return false;
             const targetDate = new Date(g.target_date);
             const now = new Date();
-            return targetDate < now && g.status !== 'COMPLETED';
+            const isCompleted = g.status && (g.status.toUpperCase() === 'COMPLETED' || g.status.toLowerCase() === 'completed');
+            return targetDate < now && !isCompleted;
         }).length;
+
+        console.log('Stats calculated:', { totalGoals, completedGoals, inProgressGoals, overdueGoals });
 
         // Calculate monthly distribution for current year
         const currentYear = new Date().getFullYear();
@@ -408,7 +418,9 @@ export const getGoalStats = async (req, res) => {
                 const goalDate = new Date(g.target_date);
                 return goalDate.getMonth() === i && goalDate.getFullYear() === currentYear;
             });
-            const completed = goalsInMonth.filter(g => g.status === 'COMPLETED').length;
+            const completed = goalsInMonth.filter(g =>
+                g.status && (g.status.toUpperCase() === 'COMPLETED' || g.status.toLowerCase() === 'completed')
+            ).length;
 
             return {
                 id: i + 1,

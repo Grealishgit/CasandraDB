@@ -37,7 +37,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
                             to="/home"
                             className={`${darkMode ? 'text-white' : 'text-gray-800 '} font-semibold hover:text-[#6634E2] transition duration-200`}
                         >
-                            Dashboard
+                            Home
                         </Link>
                         <Link
                             to="/goals"

@@ -15,9 +15,9 @@ export const GoalModel = {
             category,
             banner,
             target_date,
-            status = 'ACTIVE',
+            status = 'not_started',
             progress = 0,
-            priority = 'MEDIUM',
+            priority = 'medium',
             tags = [],
             milestones = [],
             notes

@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { User, Mail, Calendar, Settings, Award, Target, TrendingUp, Edit2, Save, X } from 'lucide-react';
+import { goalsAPI } from '../api/goals';
+import { useEffect } from 'react';
 
 const Profile = () => {
   const { darkMode } = useOutletContext() || { darkMode: false };
   const { user } = useAuth();
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -15,12 +19,30 @@ const Profile = () => {
     joinedDate: user?.created_at || new Date().toISOString(),
   });
 
-  const stats = [
-    { label: 'Total Goals', value: 12, icon: Target, color: 'text-blue-500' },
-    { label: 'Completed', value: 5, icon: Award, color: 'text-green-500' },
-    { label: 'In Progress', value: 4, icon: TrendingUp, color: 'text-purple-500' },
-    { label: 'Success Rate', value: '41.7%', icon: TrendingUp, color: 'text-orange-500' },
+  const statsLabel = [
+    { label: 'Total Goals', value: stats?.totalGoals || 0, icon: Target, color: 'text-blue-500' },
+    { label: 'Completed', value: stats?.completedGoals || 0, icon: Award, color: 'text-green-500' },
+    { label: 'In Progress', value: stats?.inProgressGoals || 0, icon: TrendingUp, color: 'text-purple-500' },
+    { label: 'Success Rate', value: stats?.successRate || 0, icon: TrendingUp, color: 'text-orange-500' },
   ];
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      setLoading(true);
+      const response = await goalsAPI.getGoalStats();
+      if (response.success) {
+        setStats(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -167,13 +189,13 @@ const Profile = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {stats.map((stat, index) => (
+              {statsLabel.map((stat, index) => (
                 <div
                   key={index}
                   className={`rounded-lg shadow-lg p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}
                 >
                   <stat.icon className={`w-8 h-8 ${stat.color} mb-3`} />
-                  <p className="text-2xl font-bold mb-1">{stat.value}</p>
+                  <p className="md:text-4xl text-2xl text-center font-bold mb-1">{loading ? 'Loading...' : stat.value}</p>
                   <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                     {stat.label}
                   </p>
