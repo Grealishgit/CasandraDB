@@ -7,7 +7,7 @@ import { verifyToken } from '../utils/jwt.js';
 export const authenticate = async (req, res, next) => {
     try {
         // Get token from cookie or Authorization header
-        let token = req.cookies.token;
+        const token = req.cookies.token;
 
         // If not in cookie, check Authorization header
         if (!token && req.headers.authorization) {
