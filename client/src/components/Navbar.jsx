@@ -101,19 +101,19 @@ const Navbar = ({ darkMode, setDarkMode }) => {
 
                     {showSidebar && (
                         <div className={`mt-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'}  space-y-2 rounded-md p-4`}>
-                            <Link
+                            <Link onClick={() => setShowSidebar(!showSidebar)}
                                 to="/home"
                                 className="block font-semibold py-2 hover:text-[#6634E2]  transition duration-200"
                             >
-                                Dashboard
+                                Home
                             </Link>
-                            <Link
+                            <Link onClick={() => setShowSidebar(!showSidebar)}
                                 to="/goals"
                                 className="block  font-semibold py-2 hover:text-[#6634E2]  transition duration-200"
                             >
                                 My Goals
                             </Link>
-                            <Link
+                            <Link onClick={() => setShowSidebar(!showSidebar)}
                                 to="/create-goal"
                                 className="block font-semibold py-2 hover:text-[#6634E2]  transition duration-200"
                             >
