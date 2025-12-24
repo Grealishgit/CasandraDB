@@ -376,3 +376,79 @@ export const deleteGoal = async (req, res) => {
     }
 };
 
+/**
+ * @route   GET /api/goals/stats
+ * @desc    Get goal statistics for dashboard
+ * @access  Private
+ */
+export const getGoalStats = async (req, res) => {
+    try {
+        const user_id = req.user.userId;
+
+        // Fetch all user's goals
+        const allGoals = await GoalModel.findByUserId(user_id, 1000);
+
+        // Calculate stats
+        const totalGoals = allGoals.length;
+        const completedGoals = allGoals.filter(g => g.status === 'COMPLETED').length;
+        const inProgressGoals = allGoals.filter(g => g.status === 'IN_PROGRESS').length;
+        const overdueGoals = allGoals.filter(g => {
+            if (!g.target_date) return false;
+            const targetDate = new Date(g.target_date);
+            const now = new Date();
+            return targetDate < now && g.status !== 'COMPLETED';
+        }).length;
+
+        // Calculate monthly distribution for current year
+        const currentYear = new Date().getFullYear();
+        const monthlyDistribution = Array.from({ length: 12 }, (_, i) => {
+            const monthName = new Date(currentYear, i, 1).toLocaleString('default', { month: 'long' });
+            const goalsInMonth = allGoals.filter(g => {
+                if (!g.target_date) return false;
+                const goalDate = new Date(g.target_date);
+                return goalDate.getMonth() === i && goalDate.getFullYear() === currentYear;
+            });
+            const completed = goalsInMonth.filter(g => g.status === 'COMPLETED').length;
+
+            return {
+                id: i + 1,
+                month: monthName,
+                goals: goalsInMonth.length,
+                completed
+            };
+        });
+
+        // Calculate success rate
+        const successRate = totalGoals > 0 ? ((completedGoals / totalGoals) * 100).toFixed(1) : 0;
+
+        // Calculate this month's goals
+        const currentMonth = new Date().getMonth();
+        const thisMonthGoals = allGoals.filter(g => {
+            if (!g.target_date) return false;
+            const goalDate = new Date(g.target_date);
+            return goalDate.getMonth() === currentMonth && goalDate.getFullYear() === currentYear;
+        }).length;
+
+        res.status(200).json({
+            success: true,
+            data: {
+                totalGoals,
+                completedGoals,
+                inProgressGoals,
+                overdueGoals,
+                successRate: parseFloat(successRate),
+                thisMonthGoals,
+                monthlyDistribution
+            }
+        });
+
+    } catch (error) {
+        console.error('Get goal stats error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching goal statistics',
+            error: error.message
+        });
+    }
+};
+

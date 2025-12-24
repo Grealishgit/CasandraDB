@@ -8,7 +8,8 @@ import {
     getUpcomingGoals,
     updateGoal,
     deleteGoal,
-    uploadBanner
+    uploadBanner,
+    getGoalStats
 } from '../controllers/goals.js';
 import { authenticate } from '../middleware/auth.js';
 import multer from 'multer';
@@ -40,6 +41,7 @@ goalsRouter.post('/upload-banner', upload.single('banner'), uploadBanner);
 // Goal CRUD routes
 goalsRouter.post('/', createGoal);
 goalsRouter.get('/', getGoals);
+goalsRouter.get('/stats', getGoalStats);
 goalsRouter.get('/status/:status', getGoalsByStatus);
 goalsRouter.get('/category/:category', getGoalsByCategory);
 goalsRouter.get('/upcoming', getUpcomingGoals);

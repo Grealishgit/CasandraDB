@@ -71,4 +71,10 @@ export const goalsAPI = {
         });
         return response.data;
     },
+
+    // Get goal statistics
+    getGoalStats: async () => {
+        const response = await api.get('/goals/stats');
+        return response.data;
+    },
 };

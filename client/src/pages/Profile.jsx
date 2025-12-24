@@ -135,14 +135,15 @@ const Profile = () => {
                   <>
                     <button
                       onClick={handleSave}
-                      className="w-full py-2 bg-[#6634E2] text-white rounded-lg hover:bg-[#7954d8] transition flex items-center justify-center gap-2"
+                      className="w-full py-2 cursor-pointer bg-[#6634E2] text-white rounded-md hover:bg-[#7954d8] transition flex items-center justify-center gap-2"
                     >
                       <Save className="w-4 h-4" />
                       Save Changes
                     </button>
                     <button
                       onClick={handleCancel}
-                      className={`w-full py-2 rounded-lg transition flex items-center justify-center gap-2 ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'
+                      className={`w-full py-2 rounded-md cursor-pointer transition flex items-center justify-center gap-2 
+                        ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'
                         }`}
                     >
                       <X className="w-4 h-4" />
@@ -152,7 +153,7 @@ const Profile = () => {
                 ) : (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="w-full py-2 bg-[#6634E2] text-white rounded-lg hover:bg-[#7954d8] transition flex items-center justify-center gap-2"
+                      className="w-full py-2 cursor-pointer bg-[#6634E2] text-white rounded-md hover:bg-[#7954d8] transition flex items-center justify-center gap-2"
                   >
                     <Edit2 className="w-4 h-4" />
                     Edit Profile
