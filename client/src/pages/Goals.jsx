@@ -130,7 +130,7 @@ const Goals = () => {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
                     <button
                         onClick={() => navigate('/create-goal')}
-                        className="mt-4 md:mt-0 flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r
+                            className="mt-4 md:mt-0 cursor-pointer flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r
                          from-[#6634E2] to-[#7954d8] text-white rounded-md font-semibold shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 hover:scale-105 transition-all duration-300"
                     >
                         <Plus className="w-5 h-5" />
