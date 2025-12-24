@@ -7,7 +7,7 @@ import Footer from './Footer';
 
 const Layout = ({ children }) => {
 
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState('');
 
     useEffect(() => {
         const savedMode = localStorage.getItem('darkMode');
