@@ -2,7 +2,7 @@ import React from 'react';
 
 const CreateGoal = () => {
     return (
-        <div className="min-h-screen bg-gray-950 p-8">
+        <div className="min-h-screen mt-16 bg-gray-950 p-8">
             <div className="max-w-3xl mx-auto">
                 <h1 className="text-4xl font-bold text-white mb-6">Create New Goal</h1>
 

@@ -13,7 +13,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     };
 
     return (
-        <nav className={`w-full ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-100 border-gray-200'} border-b shadow-lg`}>
+        <nav className={`w-full fixed top-0 left-0 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-100 border-gray-200'} border-b shadow-lg`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo/Brand */}
@@ -80,8 +80,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
                             ) : (
                                 <Sun className={`${darkMode ? 'text-white' : 'text-gray-800 '} font-semibold hover:text-[#6634E2] transition duration-200`} />
                             )}
-                            <span className={`ml-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                                {darkMode ? 'Dark' : 'Light'} Mode</span>
+
                         </div>
                     </div>
                 </div>

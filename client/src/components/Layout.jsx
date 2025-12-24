@@ -14,14 +14,15 @@ const Layout = ({ children }) => {
         }
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         localStorage.setItem('darkMode', darkMode);
     }, [darkMode]);
 
     return (
-        <div className={`min-h-screen bg-gray-100 ${darkMode ? 'dark:bg-gray-950' : ''}`}>
+        <div className={`min-h-screen  ${darkMode ? 'dark:bg-gray-950' : 'bg-gray-100'}`}>
             <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
-            <main className="w-full">
+
+            <main className={`flex-1 ${darkMode ? 'dark:bg-gray-950' : 'bg-gray-100'}`}>
                 {children}
             </main>
         </div>

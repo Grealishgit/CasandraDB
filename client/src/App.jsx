@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
 import Goals from './pages/Goals'
 import CreateGoal from './pages/CreateGoal'
+import Profile from './pages/Profile'
 import LandingPage from './components/LandingPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import { Toaster } from 'react-hot-toast';
@@ -11,7 +12,7 @@ import { AuthProvider } from './context/AuthContext';
 const App = () => {
   return (
     <AuthProvider>
-      <Toaster position="top-right" />
+      <Toaster />
 
       <Routes>
         {/* Public Route */}
@@ -41,6 +42,15 @@ const App = () => {
           element={
             <ProtectedRoute>
               <CreateGoal />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
