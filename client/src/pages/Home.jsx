@@ -1,9 +1,16 @@
 import { BadgePercentIcon, Calendars, CircleCheckBig, ListCheck } from 'lucide-react';
 import React from 'react'
 import { useOutletContext } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { yearlyGoals } from '../lib/data';
+// import { quotes } from '../lib/quotes';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const Home = () => {
-    const { darkMode } = useOutletContext();
+    const [quote, setQuote] = useState({ text: '', author: '' });
+    const { darkMode } = useOutletContext() || { darkMode: false };
+    const { user, logout } = useAuth();
 
     const greeting = () => {
         const currentHour = new Date().getHours();
@@ -12,13 +19,20 @@ const Home = () => {
         return 'Good Evening';
     }
 
+    // useEffect(() => {
+    //     const randomIndex = Math.floor(Math.random() * quotes.length);
+    //     setQuote(quotes[randomIndex]);
+    // }, []);
+
+
+
     return (
         <div className={`w-full h-screen mt-16  justify-center items-center
         ${darkMode ? 'bg-linear-to-tr from-gray-950 via-gray-900 to-gray-950 text-white' :
                 'bg-linear-to-tl via-indigo-400/40 from-indigo-50 to-gray-50'} flex flex-col items-center`}>
 
             <div className='text-center px-4'>
-                <h2 className='md:text-5xl text-4xl font-semibold'>{greeting()} Hunter</h2>
+                <h2 className='md:text-5xl text-4xl font-semibold'>{greeting()} 👋 <span className='text-[#6634E2] capitalize'>{user?.username || user?.email || 'User'}</span></h2>
                 <p className={`md:text-md text-sm mt-4 text-center ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
                     Bring your goals to life with FU | GOALS - your personal goal management companion.
                 </p>
@@ -82,6 +96,99 @@ const Home = () => {
                     <p className='text-center md:text-md text-sm'>
                         <span className='text-red-500 mt-2 font-semibold'>+1%</span> since last week
                     </p>
+                </div>
+            </div>
+
+            {/* Random Quote Section */}
+            {/* <div className={`w-full max-w-3xl mt-10 p-6 rounded-lg shadow-md
+            ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
+                <h3 className='text-md font-semibold mb-4'>Motivational Quote</h3>
+                <p className='italic text-center md:text-md text-sm'>
+                    "{quote.text}"
+                </p>
+                <p className='text-right font-semibold text-[#6634E2] mt-4'>- {quote.author}</p>
+            </div> */}
+
+            {/* Card left infomation, right yearly distribution of goals */}
+            <div className='w-full max-w-6xl mt-10 px-4 mb-10'>
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+                    {/* Left Card - Summary Information */}
+                    <div className={`p-6 rounded-lg shadow-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
+                        <h3 className='text-2xl font-bold mb-4'>Your Progress</h3>
+                        <div className='space-y-4'>
+                            <div className='border-t border-gray-300 dark:border-gray-600 pt-4'>
+                                <p className={`text-sm text-center ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-2`}>
+                                    You're making great progress! Keep up the momentum.
+                                </p>
+                                <div className='space-y-2'>
+                                    <div className='flex justify-between text-sm'>
+                                        <span>Completion Rate</span>
+                                        <span className='font-semibold'>41.7%</span>
+                                    </div>
+                                    <div className='w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2'>
+                                        <div className='bg-[#6634E2] h-2 rounded-full' style={{ width: '41.7%' }}></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='grid grid-cols-2 gap-4 mt-4'>
+                                <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>This Month</p>
+                                    <p className='text-xl font-bold'>6 Goals</p>
+                                </div>
+                                <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Avg. Time</p>
+                                    <p className='text-xl font-bold'>2.5 days</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Card - Yearly Distribution Bar Chart */}
+                    <div className={`p-6 rounded-lg shadow-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
+                        <div className='flex justify-between items-center mb-6'>
+                            <h3 className='text-xl font-bold'>Yearly Distribution</h3>
+                            <div className='flex items-center gap-2 text-sm'>
+                                <span className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total Goals</span>
+                                <span className='text-2xl font-bold text-[#6634E2]'>{yearlyGoals.reduce((acc, goal) => acc + goal.goals, 0)}</span>
+                            </div>
+                        </div>
+
+                        {/* Bar Chart */}
+                        <div className='flex items-end justify-between h-48 gap-1'>
+                            {yearlyGoals.map((item) => {
+                                const maxGoals = Math.max(...yearlyGoals.map(g => g.goals));
+                                const heightPercentage = (item.goals / maxGoals) * 100;
+
+                                return (
+                                    <div key={item.id} className='flex flex-col items-center flex-1'>
+                                        <div className='w-full flex items-end justify-center h-full'>
+                                            <div
+                                                className={`w-full rounded-t-md transition-all duration-300 hover:opacity-80 cursor-pointer
+                                                    ${item.month === 'Mar' ? 'bg-[#6634E2]' : darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}
+                                                style={{ height: `${heightPercentage}%` }}
+                                                title={`${item.month}: ${item.goals} goals, ${item.completed} completed`}
+                                            ></div>
+                                        </div>
+                                        <span className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                            {item.month.slice(0, 3)}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Legend */}
+                        <div className='flex justify-center gap-6 mt-6 text-sm'>
+                            <div className='flex items-center gap-2'>
+                                <div className='w-3 h-3 rounded-full bg-[#6634E2]'></div>
+                                <span className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Current Month</span>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                                <div className={`w-3 h-3 rounded-full ${darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}></div>
+                                <span className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Other Months</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
