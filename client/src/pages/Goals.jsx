@@ -377,7 +377,7 @@ const Goals = () => {
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                navigate(`/goals/${goal.goal_id}/edit`);
+                                                                navigate(`/goals/${goal.goal_id}`);
                                                             }}
                                                             className={`flex-1 py-2.5 rounded-lg font-medium transition-all duration-200 ${darkMode
                                                                 ? 'bg-gray-700 hover:bg-gray-600 text-gray-100'

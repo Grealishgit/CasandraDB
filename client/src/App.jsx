@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
 import Goals from './pages/Goals'
 import CreateGoal from './pages/CreateGoal'
+import EditGoal from './pages/EditGoal'
 import Profile from './pages/Profile'
 import LandingPage from './components/LandingPage'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -23,6 +24,7 @@ const App = () => {
         <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route path="/home" element={<Home />} />
           <Route path="/goals" element={<Goals />} />
+          <Route path="/goals/:id" element={<EditGoal />} />
           <Route path="/create-goal" element={<CreateGoal />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
