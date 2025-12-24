@@ -1,6 +1,10 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
+
+
+
 import { connectDB } from './config/db.js';
 import userRouter from './routes/userRouter.js';
 import goalsRouter from './routes/goalsRouter.js';
@@ -10,6 +14,12 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+
+// CORS Middleware
+app.use(cors({
+    origin: 'http://localhost:5173', // Adjust to your frontend URL
+    credentials: true // Allow cookies to be sent
+}));
 
 // Middleware
 app.use(express.json());

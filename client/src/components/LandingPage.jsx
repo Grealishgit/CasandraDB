@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
-import bg from '../assets/images/bg.jpg'
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import bg from '../assets/images/bg.jpg';
 import { Eye, EyeOff, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const LandingPage = () => {
+    const navigate = useNavigate();
+    const { register, login, forgotPassword, isAuthenticated, loading } = useAuth();
 
     const [isLogin, setIsLogin] = useState(false);
     const [isSignUp, setIsSignUp] = useState(false);
-
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -17,40 +20,89 @@ const LandingPage = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Redirect if already authenticated
+    useEffect(() => {
+        if (!loading && isAuthenticated) {
+            navigate('/home');
+        }
+    }, [isAuthenticated, loading, navigate]);
 
     // Functions
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // Handle login logic here
-    };
+        setIsLoading(true);
+        setError('');
 
-    const handleSignUp = (e) => {
-        e.preventDefault();
-        try {
-            if (password !== confirmPassword) {
-                setError("Passwords do not match");
-                toast.error("Passwords do not match");
-                return;
-            }
-        } catch (error) {
+        const result = await login({ email, password });
 
+        if (result.success) {
+            setIsLogin(false);
+            toast.success('Login successful! Redirecting in a few seconds...');
+            navigate('/home'); // Redirect to home
+        } else {
+            setError(result.error);
         }
-        // Handle sign up logic here
+
+        setIsLoading(false);
     };
 
-    const handleForgotPassword = () => {
-        // Handle forgot password logic here
-    }
+    const handleSignUp = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match");
+            toast.error("Passwords do not match");
+            return;
+        }
+
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters");
+            toast.error("Password must be at least 6 characters");
+            return;
+        }
+
+        setIsLoading(true);
+
+        const result = await register({ username, email, password });
+
+        if (result.success) {
+            setIsSignUp(false);
+            toast.success('Account created successfully! Redirecting in a few seconds...');
+            navigate('/home'); // Redirect to home
+        } else {
+            setError(result.error);
+        }
+
+        setIsLoading(false);
+    };
+
+    const handleForgotPassword = async () => {
+        if (!email) {
+            toast.error('Please enter your email address');
+            return;
+        }
+        await forgotPassword(email);
+    };
 
     const handlePasswordCompare = () => {
-        if (password !== confirmPassword) {
+        if (password && confirmPassword && password !== confirmPassword) {
             setError("Passwords do not match");
         } else {
             setError("");
         }
     }
 
-
+    // Show loading spinner while checking auth
+    if (loading) {
+        return (
+            <div className="w-full h-screen flex items-center justify-center bg-gray-100">
+                <div className="text-xl text-[#6634E2]">Loading...</div>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -108,7 +160,7 @@ const LandingPage = () => {
                         <div className='mb-4 gap-2 flex flex-col w-full'>
                             <div className='flex justify-between mb-1'>
                                 <label htmlFor="">Password</label>
-                                <span className='text-sm text-[#6634E2] float-right cursor-pointer'>Forgot Password?</span>
+                                <span className='text-sm c float-right cursor-pointer'>Forgot Password?</span>
                             </div>
 
                             <div className='relative w-full'>
@@ -135,9 +187,10 @@ const LandingPage = () => {
 
                         </div>
 
-                        <button onClick={handleLogin} className='bg-[#6634E2] text-white cursor-pointer px-4 py-2
-                         rounded-md hover:bg-[#7954d8] transition duration-300 w-full'>
-                            Login
+                        <button onClick={handleLogin} disabled={isLoading} className='bg-[#6634E2] text-white cursor-pointer px-4 py-2
+                         rounded-md hover:bg-[#7954d8] transition duration-300 w-full
+                         disabled:opacity-50 disabled:cursor-not-allowed'>
+                            {isLoading ? 'Logging in...' : 'Login'}
                         </button>
 
                         <p className='text-sm mt-4'>
@@ -235,9 +288,10 @@ const LandingPage = () => {
 
                             </div>
 
-                            <button onClick={handleSignUp} className='bg-[#6634E2] text-white cursor-pointer px-4 py-2
-                             rounded-md hover:bg-[#7954d8] transition duration-300 w-full'>
-                                Sign Up
+                            <button onClick={handleSignUp} disabled={isLoading} className='bg-[#6634E2] text-white cursor-pointer px-4 py-2
+                             rounded-md hover:bg-[#7954d8] transition duration-300 w-full
+                             disabled:opacity-50 disabled:cursor-not-allowed'>
+                                {isLoading ? 'Signing up...' : 'Sign Up'}
                             </button>
 
                             <p className='text-sm mt-4'>
