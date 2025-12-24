@@ -1,11 +1,16 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { LogOut, User, Target, Sun, Moon } from 'lucide-react';
+import { LogOut, User, Target, Sun, Moon, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 
 const Navbar = ({ darkMode, setDarkMode }) => {
+
+    const [showSidebar, setShowSidebar] = useState(false);
+
     const navigate = useNavigate();
     const { user, logout } = useAuth();
+
 
     const handleLogout = async () => {
         await logout();
@@ -86,32 +91,44 @@ const Navbar = ({ darkMode, setDarkMode }) => {
                 </div>
 
                 {/* Mobile Menu */}
-                <div className="md:hidden pb-4 border-t border-gray-300 space-y-2">
-                    <Link
-                        to="/home"
-                        className="block text-gray-800 font-semibold hover:text-[#6634E2] py-2 transition duration-200"
-                    >
-                        Dashboard
-                    </Link>
-                    <Link
-                        to="/goals"
-                        className="block text-gray-800 font-semibold hover:text-[#6634E2] py-2 transition duration-200"
-                    >
-                        My Goals
-                    </Link>
-                    <Link
-                        to="/create-goal"
-                        className="block text-gray-800 font-semibold hover:text-[#6634E2] py-2 transition duration-200"
-                    >
-                        Create Goal
-                    </Link>
-                    {/* Mobile User Info */}
-                    <div className="flex items-center space-x-2 text-gray-800 py-2">
-                        <User className="h-5 w-5" />
-                        <span className="text-sm font-semibold text-[#6634E2]">
-                            {user?.username || user?.email || 'User'}
-                        </span>
+                <div className="md:hidden relative">
+
+                    <div onClick={() => setShowSidebar(!showSidebar)}
+                        className={` ${darkMode ? 'text-white bg-gray-800' : 'text-gray-800 bg-gray-100'} p-2 rounded-md absolute -right-1 top-1 cursor-pointer`}>
+                        <ChevronDown />
                     </div>
+
+
+                    {showSidebar && (
+                        <div className={`mt-6 ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'}  space-y-2 rounded-md p-4`}>
+                            <Link
+                                to="/home"
+                                className="block font-semibold py-2 hover:text-[#6634E2]  transition duration-200"
+                            >
+                                Dashboard
+                            </Link>
+                            <Link
+                                to="/goals"
+                                className="block  font-semibold py-2 hover:text-[#6634E2]  transition duration-200"
+                            >
+                                My Goals
+                            </Link>
+                            <Link
+                                to="/create-goal"
+                                className="block font-semibold py-2 hover:text-[#6634E2]  transition duration-200"
+                            >
+                                Create Goal
+                            </Link>
+                            {/* Mobile User Info */}
+                            <div className="flex items-center space-x-2 text-[#6634E2] py-2">
+                                <User className="h-5 w-5" />
+                                <span className="text-md font-semibold text-[#6634E2]">
+                                    {user?.username || user?.email || 'User'}
+                                </span>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </div>
         </nav >

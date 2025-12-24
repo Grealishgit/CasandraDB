@@ -6,55 +6,27 @@ import CreateGoal from './pages/CreateGoal'
 import Profile from './pages/Profile'
 import LandingPage from './components/LandingPage'
 import ProtectedRoute from './components/ProtectedRoute'
+import Layout from './components/Layout'
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 
 const App = () => {
   return (
     <AuthProvider>
-      <Toaster />
+      <Toaster position="top-right" />
 
       <Routes>
         {/* Public Route */}
         <Route path="/" element={<LandingPage />} />
 
-        {/* Protected Routes - All will have Navbar */}
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/goals"
-          element={
-            <ProtectedRoute>
-              <Goals />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/create-goal"
-          element={
-            <ProtectedRoute>
-              <CreateGoal />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+        {/* Protected Routes with Layout (Navbar) */}
+        <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/goals" element={<Goals />} />
+          <Route path="/create-goal" element={<CreateGoal />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+      </Routes> 
     </AuthProvider>
   )
 }

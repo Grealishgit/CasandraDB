@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import Layout from './Layout';
 
 const ProtectedRoute = ({ children }) => {
     const { isAuthenticated, loading } = useAuth();
@@ -20,8 +19,8 @@ const ProtectedRoute = ({ children }) => {
         return <Navigate to="/" replace />;
     }
 
-    // Render the protected component with Layout (includes Navbar)
-    return <Layout>{children}</Layout>;
+    // Render children (which will be the Layout with Outlet)
+    return children;
 };
 
 export default ProtectedRoute;
